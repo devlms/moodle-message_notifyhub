@@ -60,11 +60,11 @@
                 <td>{{#on}}<span class="badge bg-success text-white">{{#str}} on, message_notifyhub {{/str}}</span>{{/on}}{{^on}}<span class="badge bg-secondary">{{#str}} off, message_notifyhub {{/str}}</span>{{/on}}</td>
                 <td>{{sent}}</td>
                 <td>{{failed}}</td>
-                <td>
-                    {{#upurl}}<a href="{{upurl}}">{{#str}} moveup, message_notifyhub, {{label}} {{/str}}</a> · {{/upurl}}
-                    {{#downurl}}<a href="{{downurl}}">{{#str}} movedown, message_notifyhub, {{label}} {{/str}}</a> · {{/downurl}}
-                    <a href="{{toggleurl}}">{{#on}}{{#str}} turnoff, message_notifyhub, {{label}} {{/str}}{{/on}}{{^on}}{{#str}} turnon, message_notifyhub, {{label}} {{/str}}{{/on}}</a> ·
-                    <a href="{{testurl}}">{{#str}} sendtest, message_notifyhub, {{label}} {{/str}}</a>
+                <td class="text-nowrap">
+                    {{#upurl}}<a href="{{upurl}}" class="me-1">{{#pix}} t/up, core, {{#str}} moveup, message_notifyhub, {{label}} {{/str}} {{/pix}}</a>{{/upurl}}{{^upurl}}<span class="icon me-1" aria-hidden="true"></span>{{/upurl}}
+                    {{#downurl}}<a href="{{downurl}}" class="me-2">{{#pix}} t/down, core, {{#str}} movedown, message_notifyhub, {{label}} {{/str}} {{/pix}}</a>{{/downurl}}{{^downurl}}<span class="icon me-2" aria-hidden="true"></span>{{/downurl}}
+                    <a href="{{testurl}}" class="btn btn-sm btn-outline-secondary me-2">{{#str}} sendtest, message_notifyhub, {{label}} {{/str}}</a>
+                    <a href="{{toggleurl}}">{{#on}}{{#str}} turnoff, message_notifyhub, {{label}} {{/str}}{{/on}}{{^on}}{{#str}} turnon, message_notifyhub, {{label}} {{/str}}{{/on}}</a>
                 </td>
             </tr>
         {{/channels}}

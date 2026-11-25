@@ -25,6 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['actions'] = 'الإجراءات';
+$string['anyemail'] = 'أي بريد من Moodle';
 $string['channel'] = 'القناة';
 $string['channels'] = 'القنوات، بالترتيب الذي يجرّبها به المركز';
 $string['deleteduser'] = 'مستخدم محذوف';
@@ -92,6 +93,7 @@ $string['test:body'] = 'هذا اختبار من مركز الإشعارات ف�
 $string['test:failed'] = 'لم يصل الاختبار عبر {$a}. تحقّق من أنك أعددت هذه القناة في تفضيلات الإشعارات، ومن إعدادات القناة نفسها.';
 $string['test:sent'] = 'أُرسل الاختبار عبر {$a}.';
 $string['test:subject'] = 'اختبار مركز الإشعارات';
+$string['testlabel'] = 'اختبار المركز';
 $string['testmail'] = 'أرسل بريدًا تجريبيًا (صفحة الاختبار في Moodle)';
 $string['time'] = 'الوقت';
 $string['turnoff'] = 'إخراج {$a} من المركز';

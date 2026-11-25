@@ -25,6 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['actions'] = 'Actions';
+$string['anyemail'] = 'Any email from Moodle';
 $string['channel'] = 'Channel';
 $string['channels'] = 'Channels, in the order the hub tries them';
 $string['deleteduser'] = 'Deleted user';
@@ -92,6 +93,7 @@ $string['test:body'] = 'This is a test from the notification hub on {$a}. If you
 $string['test:failed'] = 'The test through {$a} was not delivered. Check that you set up this channel in your notification preferences, and the channel\'s own settings.';
 $string['test:sent'] = 'Test sent through {$a}.';
 $string['test:subject'] = 'Notification hub test';
+$string['testlabel'] = 'Hub test';
 $string['testmail'] = 'Send a test email (Moodle\'s own test page)';
 $string['time'] = 'Time';
 $string['turnoff'] = 'Take {$a} out of the hub';

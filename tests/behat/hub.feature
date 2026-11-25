@@ -26,7 +26,7 @@ Feature: The notification hub page
     Given I visit "/message/output/notifyhub/index.php"
     When I follow "Send me a test through Email"
     Then I should see "Test sent through Email."
-    And I should see "message_notifyhub / test" in the "message-notifyhub-log" "table"
+    And I should see "Hub test" in the "message-notifyhub-log" "table"
     And I should see "Sent" in the "message-notifyhub-log" "table"
 
   Scenario: The hub page is listed under Messaging

@@ -71,6 +71,23 @@ if ($action !== '') {
     redirect($url);
 }
 
+$strings = get_string_manager();
+$channellabel = fn(string $name): string => $strings->string_exists('pluginname', 'message_' . $name)
+    ? get_string('pluginname', 'message_' . $name) : $name;
+// Moodle's own name for a notification type, as on the preferences page; the code names when there is none.
+$notificationlabel = function (string $component, string $name) use ($strings): string {
+    if ($component === 'message_notifyhub' && $name === 'test') {
+        return get_string('testlabel', 'message_notifyhub');
+    }
+    if ($component === 'core' && $name === 'email') {
+        return get_string('anyemail', 'message_notifyhub');
+    }
+    if ($strings->string_exists('messageprovider:' . $name, $component)) {
+        return get_string('messageprovider:' . $name, $component);
+    }
+    return $component . ' / ' . $name;
+};
+
 $week = time() - 7 * DAYSECS;
 $counts = log::counts($week);
 $order = channels::ordered();
@@ -82,7 +99,7 @@ foreach ($order as $i => $name) {
     $rows[] = [
         'position' => $i + 1,
         'name' => $name,
-        'label' => get_string('pluginname', 'message_' . $name),
+        'label' => $channellabel($name),
         'on' => !$off,
         'sent' => $counts[$name][log::SENT] ?? 0,
         'failed' => $counts[$name][log::FAILED] ?? 0,
@@ -107,8 +124,8 @@ foreach ($recent as $row) {
         'time' => userdate($row->timecreated, get_string('strftimedatetimeshort', 'core_langconfig')),
         'user' => $user ? fullname($user) : get_string('deleteduser', 'message_notifyhub'),
         'userurl' => $user ? (new moodle_url('/user/profile.php', ['id' => $user->id]))->out(false) : '',
-        'notification' => $row->component . ' / ' . $row->name,
-        'channel' => $row->channel === '' ? '-' : $row->channel,
+        'notification' => $notificationlabel($row->component, $row->name),
+        'channel' => $row->channel === '' ? '-' : $channellabel($row->channel),
         'status' => get_string('status:' . $row->status, 'message_notifyhub'),
         'ok' => $row->status === log::SENT,
     ];
