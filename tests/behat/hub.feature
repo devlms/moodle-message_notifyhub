@@ -32,3 +32,10 @@ Feature: The notification hub page
   Scenario: The hub page is listed under Messaging
     When I navigate to "Messaging > Notification hub" in site administration
     Then I should see "Recent deliveries"
+
+  @javascript @accessibility
+  Scenario: The hub page meets accessibility standards
+    Given I visit "/message/output/notifyhub/index.php"
+    And I follow "Send me a test through Email"
+    Then I should see "Recent deliveries"
+    And the page should meet accessibility standards
