@@ -22,7 +22,8 @@ Moodle sends a notification to every output a user has switched on, and does not
 ## Good to know
 
 - The log never stores message text, only who, which notification, which channel and the result. SMS can carry sign-in codes. Rows are removed after 30 days (change it in the hub's settings). Users' rows are included in Moodle's privacy export and deletion.
-- SMS goes through Moodle's own SMS gateways, which already choose a gateway by country code, so the hub does not add a second SMS router.
+- SMS goes through Moodle's SMS output (Moodle 5.0 and later) and its SMS gateways, which already choose a gateway by country code, so the hub does not add a second SMS router. Moodle only sends an SMS when the notification comes with SMS text and the user has a mobile phone number in their profile; in Moodle 5.3 core that is Assignment notifications. For other notifications the SMS channel is skipped and the next one is tried.
+- Forum emails sent directly by Moodle can carry a "reply to this post by email" line. That line is added for the email output only, so the copy the hub sends by email does not have it.
 - Why email lands in spam (SPF, DKIM, DMARC) is a separate job: the free [Mail health](https://moodle.org/plugins/tool_mailhealth) plugin checks it, and the hub links to it when it is installed.
 - Popup notifications (the bell) are always kept by Moodle, so the hub does not route to them.
 

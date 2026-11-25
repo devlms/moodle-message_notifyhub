@@ -11,7 +11,7 @@ Feature: The notification hub page
     And I set the field "email" to "1"
     And I press "Save changes"
 
-  Scenario: An admin reorders channels and takes one out of the hub
+  Scenario: An admin takes a channel out of the hub and puts it back
     When I visit "/message/output/notifyhub/index.php"
     Then I should see "The hub is not on yet"
     And I should see "Email" in the "message-notifyhub-channels" "table"

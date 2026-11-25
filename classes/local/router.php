@@ -39,7 +39,7 @@ final class router {
      * Deliver a notification.
      *
      * @param \stdClass $message As core hands it to an output.
-     * @return bool False only when channels were tried and none delivered.
+     * @return bool True when a channel delivered it or the user already gets it elsewhere; false otherwise.
      */
     public static function deliver(\stdClass $message): bool {
         $user = is_object($message->userto) ? $message->userto : \core_user::get_user($message->userto);
@@ -49,15 +49,18 @@ final class router {
         $component = (string) ($message->component ?? '');
         $name = (string) ($message->name ?? '');
         $outputs = channels::outputs();
+        // Every channel counts here, in any order and even if it is out of the hub: if core already sends this
+        // notification to this user somewhere, the hub adds nothing.
+        foreach ($outputs as $channel => $output) {
+            if ($output->is_user_configured($user) && self::already_receives($channel, $output, $user, $component, $name)) {
+                return true;
+            }
+        }
         $tried = [];
         foreach (channels::active() as $channel) {
             $output = $outputs[$channel] ?? null;
             if (!$output || !$output->is_user_configured($user)) {
                 continue;
-            }
-            if (self::already_receives($channel, $output, $user, $component, $name)) {
-                // The user gets this notification on that channel anyway: the hub adds nothing.
-                return true;
             }
             $tried[] = $channel;
             if (self::send($output, $message)) {
@@ -123,7 +126,8 @@ final class router {
 
     /**
      * Whether core already sends this notification to this user on a channel, using the same rules as
-     * \core\message\manager: a locked setting wins; otherwise the user's preference, or the site default.
+     * message_send() in lib/messagelib.php: a locked setting wins; otherwise the user's preference, or the site
+     * default, unless the user has emailstop set.
      *
      * @param string $channel
      * @param \message_output $output

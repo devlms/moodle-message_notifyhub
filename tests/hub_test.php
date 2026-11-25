@@ -86,6 +86,67 @@ final class hub_test extends \advanced_testcase {
         $this->assertSame(1, $sink->count());
     }
 
+    public function test_sms_through_the_hub_with_email_as_fallback(): void {
+        global $CFG, $DB;
+        if (!file_exists($CFG->dirroot . '/message/output/sms/message_output_sms.php')) {
+            $this->markTestSkipped('Moodle\'s SMS output arrived in 5.0.');
+        }
+        require_once($CFG->dirroot . '/sms/tests/fixtures/dummy_gateway.php');
+        $this->resetAfterTest();
+        $this->preventResetByRollback();
+        \core\di::get(\core_sms\manager::class)->create_gateway_instance(
+            classname: \smsgateway_dummy\gateway::class,
+            name: 'dummy',
+            enabled: true,
+            config: (object) ['priority' => 50],
+        );
+        \core\plugininfo\message::enable_plugin('sms', 1);
+        \core\plugininfo\message::enable_plugin('notifyhub', 1);
+        set_config('order', 'sms,email', 'message_notifyhub');
+        set_config('message_provider_mod_assign_assign_notification_enabled', 'notifyhub', 'message');
+        $withphone = $this->getDataGenerator()->create_user(['phone2' => '+254700000001']);
+        $nophone = $this->getDataGenerator()->create_user();
+        $sink = $this->redirectEmails();
+
+        $send = function (\stdClass $user, ?string $sms): void {
+            $message = new \core\message\message();
+            $message->component = 'mod_assign';
+            $message->name = 'assign_notification';
+            $message->userfrom = \core_user::get_noreply_user();
+            $message->userto = $user;
+            $message->subject = 'Graded';
+            $message->fullmessage = 'Your essay was graded.';
+            $message->fullmessageformat = FORMAT_PLAIN;
+            $message->fullmessagehtml = '';
+            $message->smallmessage = 'Graded';
+            if ($sms !== null) {
+                $message->fullmessagesms = $sms;
+            }
+            $message->notification = 1;
+            message_send($message);
+        };
+
+        // A mobile number and SMS text: the SMS is queued, no email.
+        $send($withphone, 'Your essay was graded.');
+        $this->assertSame(1, $DB->count_records('sms_messages', ['recipientuserid' => $withphone->id]));
+        $this->assertSame(0, $sink->count());
+        $this->assertSame('sms', array_values(log::recent(1))[0]->channel);
+
+        // No mobile number: SMS is skipped, email goes.
+        $send($nophone, 'Your essay was graded.');
+        $this->assertSame(1, $sink->count());
+        $this->assertSame('email', array_values(log::recent(1))[0]->channel);
+
+        // A sender that gave no SMS text: the SMS output refuses, the hub falls back to email.
+        $sink->clear();
+        $this->resetDebugging();
+        $send($withphone, null);
+        $this->assertSame(1, $sink->count());
+        $rows = array_values(log::recent(2));
+        $this->assertSame(['email', 'sms'], array_column($rows, 'channel'));
+        $this->assertSame([log::SENT, log::FAILED], array_column($rows, 'status'));
+    }
+
     public function test_failed_emails_are_logged_without_their_text(): void {
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();

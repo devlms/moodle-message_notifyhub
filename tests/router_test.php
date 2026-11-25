@@ -122,6 +122,25 @@ final class router_test extends \advanced_testcase {
         $this->assertCount(0, $ntfy->sent, 'The user already has it, so the hub sends nothing.');
     }
 
+    public function test_no_second_copy_even_when_the_channel_that_gets_it_comes_later_or_is_out_of_the_hub(): void {
+        $this->resetAfterTest();
+        $user = $this->getDataGenerator()->create_user();
+        $ntfy = new fake_output();
+        $email = new fake_output();
+        router::$outputs = ['ntfy' => $ntfy, 'email' => $email];
+        set_user_preference('message_provider_mod_assign_assign_notification_enabled', 'email,notifyhub', $user);
+
+        // Email last, the default order.
+        set_config('order', 'ntfy,email', 'message_notifyhub');
+        $this->assertTrue(router::deliver($this->message($user)));
+        $this->assertCount(0, $ntfy->sent, 'Core already emails this user, so the hub sends nothing.');
+
+        // Email taken out of the hub, but still on in core.
+        set_config('off', 'email', 'message_notifyhub');
+        $this->assertTrue(router::deliver($this->message($user)));
+        $this->assertCount(0, $ntfy->sent);
+    }
+
     public function test_when_every_channel_fails_the_notification_is_undelivered(): void {
         $this->resetAfterTest();
         $user = $this->getDataGenerator()->create_user();
