@@ -10,7 +10,7 @@ Moodle sends a notification to every output a user has switched on, and does not
 - **Falls back.** A channel counts as delivered only when it confirms it. If it fails, the next one is tried.
 - **Shows what happened.** Sent and failed counts per channel for the last 7 days, the latest deliveries, SMS results per gateway (from Moodle's own SMS log), and emails Moodle could not send.
 - **Test any channel.** "Send me a test" delivers through one channel to you, and the result goes in the log.
-- **Installs channels.** Free DevLMS channels (ntfy, Africa's Talking SMS) install from the hub page. The hub downloads the newest GitHub release and unpacks it only when it matches the SHA-256 GitHub publishes and is signed with the DevLMS release key. Any other message output or SMS gateway on your site works in the hub too.
+- **Installs channels.** Free DevLMS channels (ntfy, browser notifications, Africa's Talking SMS) install from the hub page. The hub downloads the newest GitHub release and unpacks it only when it matches the SHA-256 GitHub publishes and is signed with the DevLMS release key. Any other message output or SMS gateway on your site works in the hub too.
 - **Events** "Notification delivered by the hub" and "Notification not delivered by the hub", for reports and automations.
 
 ## Set it up

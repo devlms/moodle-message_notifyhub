@@ -39,6 +39,12 @@ final class catalogue {
             'repo' => 'devlms/moodle-message_ntfy',
             'guide' => 'https://devlms.com/work/moodle-notifications-on-your-phone-with-ntfy/',
         ],
+        'message_webpush' => [
+            'kind' => 'message',
+            'regions' => 'Worldwide, in the browser',
+            'repo' => 'devlms/moodle-message_webpush',
+            'guide' => 'https://devlms.com/work/browser-notifications/',
+        ],
         'smsgateway_africastalking' => [
             'kind' => 'sms',
             'regions' => 'Kenya, Uganda, Tanzania, Rwanda, Nigeria, Malawi, Zambia, Ethiopia and more',
